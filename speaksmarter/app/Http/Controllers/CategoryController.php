@@ -10,7 +10,8 @@ class CategoryController extends Controller
 {
     public function index()
     {
-        $categories = Category::paginate(25);
+        define('NUMBER_ITEMS_PAGE', 5); //definir constante
+        $categories = Category::paginate(NUMBER_ITEMS_PAGE);
 
         return inertia('Categories/index', compact('categories'));
     }
@@ -42,7 +43,7 @@ class CategoryController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  Category  $category
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -53,35 +54,39 @@ class CategoryController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param Category  $category
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Category $category)
     {
-        //
-        return inertia('Categories.edit');
+        //        
+        return inertia('Categories/Edit', compact('category'));
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  Category  $category
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
-    {
-        //
+    public function update(CategoryRequest $request, Category $category)
+    {        
+        $category->update($request->validated());        
+
+        return redirect()->route('categories.index');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  Category  $category
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Category $category)
     {
-        //
+        $category->delete();
+
+        return redirect()->route('categories.index');
     }
 }
